@@ -15,6 +15,118 @@ import { z } from "zod";
 class Routes {
   // Synchronize the concepts from `app.ts`.
 
+  // @Router.get("/test/:arg")
+  // test(arg: string) {
+  //   return { message: "you said " + arg };
+  // }
+
+  // get all restaurants
+  @Router.get("/restaurants")
+  async getRestaurants() {
+    return { message: "getRestaurants" };
+  }
+
+  // add new restaurant
+  @Router.post("/restaurants")
+  async addRestaurant(name: string, address: string, url: string) {
+    // sync with deleting reviews for that restaurant?
+    return { message: "addRestaurant" };
+  }
+
+  // update restaurant info
+  @Router.patch("/restaurants/:id")
+  async updateRestaurantInfo(id: string, name?: string, address?: string, url?: string) {
+    return { message: "updateRestaurantInfo, id: " + id };
+  }
+
+  // delete restaurant
+  @Router.delete("/restaurants/:id")
+  async deleteRestaurant(id: string) {
+    // sync with deleting reviews for that restaurant?
+    return { message: "addRestaurant" };
+  }
+
+  // gets weightings for a user
+  @Router.get("/weightings")
+  async getUserWeighting(session: SessionDoc) {
+    // only able to get your own weightings
+    return { message: "getUserWeighting" };
+  }
+
+  // adds a new weighting for a user
+  @Router.post("/weightings")
+  async addWeighting(session: SessionDoc, food: string, ambience: string, service: string, price: string, novelty: string) {
+    // sync w creating a user?
+    return { message: "addWeighting" };
+  }
+
+  // update weighting
+  @Router.patch("/weightings/:id")
+  async updateWeightingForUser(session: SessionDoc, id: string, food?: string, ambience?: string, service?: string, price?: string, novelty?: string) {
+    return { message: "updateWeightingForUser" };
+  }
+
+  // reset weightings
+  @Router.patch("/weightings/reset/:id")
+  async resetWeightingForUser(session: SessionDoc, id: string) {
+    return { message: "resetWeightingForUser" };
+  }
+
+  // get reviews (all, by user, or for a restaurant)
+  @Router.get("/reviews")
+  async getReviews(reviewer?: string, restaurant?: string) {
+    return { message: "getReviews" };
+  }
+
+  // create a new review
+  @Router.post("/reviews")
+  async createReview(session: SessionDoc, restaurant: string, comment: string, food: string, ambience: string, service: string, price: string, novelty: string) {
+    return { message: "createReview" };
+  }
+
+  // update review
+  @Router.patch("/reviews/:id")
+  async updateReview(session: SessionDoc, id: string, comment?: string, food?: string, ambience?: string, service?: string, price?: string, novelty?: string) {
+    return { message: "updateReview" };
+  }
+
+  // delete review
+  @Router.delete("/reviews/:id")
+  async deleteReview(session: SessionDoc, id: string) {
+    return { message: "deleteReview" };
+  }
+
+  // get group by user (by name possibly)
+  @Router.get("/groups/user")
+  async getUserGroups(session: SessionDoc, user: string, name?: string) {
+    // only able to get user's groups if you are friends with them
+    return { message: "getUserGroups" };
+  }
+
+  // create new group
+  @Router.post("/groups")
+  async createGroup(session: SessionDoc, name: string, restaurants: Array<string>) {
+    return { message: "createGroup" };
+  }
+
+  // delete existing group
+  @Router.delete("/groups/:id")
+  async deleteGroup(session: SessionDoc, id: string) {
+    return { message: "deleteGroup" };
+  }
+
+  // add restaurant to group
+  @Router.patch("/groups/:id")
+  async addRestaurantToGroup(session: SessionDoc, id: string, restaurant: string) {
+    return { message: "addRestaurantToGroup" };
+  }
+
+  // delete restaurant from group
+  @Router.patch("/groups/:id")
+  async deleteRestaurantFromGroup(session: SessionDoc, id: string, restaurant: string) {
+    return { message: "deleteRestaurantFromGroup" };
+  }
+
   @Router.get("/session")
   async getSessionUser(session: SessionDoc) {
     const user = Sessioning.getUser(session);
