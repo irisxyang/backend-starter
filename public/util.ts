@@ -80,6 +80,102 @@ const operations: Operation[] = [
     method: "DELETE",
     fields: { id: "input" },
   },
+  {
+    name: "Create Restaurant",
+    endpoint: "/api/restaurants",
+    method: "POST",
+    fields: { name: "input", address: "input", url: "input" },
+  },
+  {
+    name: "Get Restaurants",
+    endpoint: "/api/restaurants",
+    method: "GET",
+    fields: {},
+  },
+  {
+    name: "Create User Weighting",
+    endpoint: "/api/user/weightings",
+    method: "POST",
+    fields: { food: "input", ambience: "input", service: "input", price: "input", novelty: "input" },
+  },
+  {
+    name: "Get User Weighting",
+    endpoint: "/api/user/weightings",
+    method: "GET",
+    fields: {},
+  },
+  {
+    name: "Update User Weighting",
+    endpoint: "/api/user/weightings",
+    method: "PATCH",
+    fields: { food: "input", ambience: "input", service: "input", price: "input", novelty: "input" },
+  },
+  {
+    name: "Create Review for Restaurant",
+    endpoint: "/api/reviews",
+    method: "POST",
+    fields: { restaurant: "input", comment: "input", food: "input", ambience: "input", service: "input", price: "input", novelty: "input" },
+  },
+  {
+    name: "Get Reviews (for user or for restaurant or all)",
+    endpoint: "/api/reviews",
+    method: "GET",
+    fields: { user: "input", restaurant: "input" },
+  },
+  {
+    name: "Get Review Preference",
+    endpoint: "/api/review/preference",
+    method: "GET",
+    fields: { review: "input" },
+  },
+  {
+    name: "Update Review for Restaurant",
+    endpoint: "/api/reviews/:id",
+    method: "PATCH",
+    fields: { id: "input", restaurant: "input", comment: "input", food: "input", ambience: "input", service: "input", price: "input", novelty: "input" },
+  },
+  {
+    name: "Delete User Review for Restaurant",
+    endpoint: "/api/reviews/:id",
+    method: "DELETE",
+    fields: { id: "input" },
+  },
+  {
+    name: "Create Group",
+    endpoint: "/api/groups",
+    method: "POST",
+    fields: { name: "input" },
+  },
+  {
+    name: "Get Restaurants in Group",
+    endpoint: "/api/group/restaurants",
+    method: "GET",
+    fields: { id: "input" },
+  },
+  {
+    name: "Get All Groups by User",
+    endpoint: "/api/groups/user",
+    method: "GET",
+    fields: { user: "input" },
+  },
+  {
+    name: "Delete Group",
+    endpoint: "/api/groups/:id",
+    method: "DELETE",
+    fields: { id: "input" },
+  },
+  {
+    name: "Add Restaurant to Group",
+    endpoint: "/api/group/add/:restaurant",
+    method: "POST",
+    fields: { id: "input", restaurant: "input" },
+  },
+  {
+    name: "Delete Restaurant from Group",
+    endpoint: "/api/group/remove/:restaurant",
+    method: "DELETE",
+    fields: { id: "input", restaurant: "input" },
+  },
   //
   // ...
   //

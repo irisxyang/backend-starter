@@ -50,4 +50,12 @@ export default class RestaurantConcept {
     await this.restaurants.partialUpdateOne({ _id }, { name, address, url });
     return { msg: "Restaurant successfully updated!" };
   }
+
+  // check that the restaurant actually exists
+  async assertRestaurantExists(_id: ObjectId) {
+    const restaurant = await this.restaurants.readOne({ _id });
+    if (!restaurant) {
+      throw new NotFoundError(`Restaurant ${_id} does not exist!`);
+    }
+  }
 }

@@ -7,10 +7,11 @@ body {
   padding: 0;
   font-family: sans-serif;
   max-height: 100vh;
-  background-color: #f1f3f5;
+  background-color: #ffff;
 }
 
-h1, h2 {
+h1,
+h2 {
   margin: 0;
   padding: 0;
 }
@@ -25,13 +26,15 @@ main {
   gap: 1em;
 }
 
-#operations, #response {
+#operations,
+#response {
   width: 45%;
   height: 70vh;
   padding: 1em;
 }
 
-#operations-list, #response-text {
+#operations-list,
+#response-text {
   height: 80vh;
   width: 100%;
   overflow: auto;
@@ -57,5 +60,5 @@ main {
 }
 
 #response-text {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
 }

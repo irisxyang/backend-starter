@@ -6,11 +6,7 @@ import { NotAllowedError, NotFoundError } from "./errors";
 export interface WeightingDoc extends BaseDoc {
   user: ObjectId;
 
-  food: string;
-  ambience: string;
-  service: string;
-  price: string;
-  novelty: string;
+  preference: ObjectId;
 }
 
 /**
@@ -24,33 +20,25 @@ export default class WeightingConcept {
   }
 
   // create a new weighting set for a user
-  async create(user: ObjectId, food: string, ambience: string, service: string, price: string, novelty: string) {
-    const _id = await this.weightings.createOne({ user, food, ambience, service, price, novelty });
-    return { msg: "Preference successfully created", weighting: await this.weightings.readOne({ _id }) };
-  }
-
-  // get weighting for a user
-  async getWeightings() {
-    // page?
-    return await this.weightings.readMany({}, { sort: { _id: -1 } });
+  async create(user: ObjectId, preference: ObjectId) {
+    const _id = await this.weightings.createOne({ user, preference });
+    return { msg: "Weighting successfully created", weighting: await this.weightings.readOne({ _id }) };
   }
 
   // gets weighting for a specific user
   async getUserWeighting(user: ObjectId) {
-    return await this.weightings.readMany({ user });
+    return await this.weightings.readOne({ user });
   }
 
   // update a weighting
-  async update(_id: ObjectId, food?: string, ambience?: string, price?: string, service?: string, novelty?: string) {
-    await this.weightings.partialUpdateOne({ _id }, { food, ambience, price, service, novelty });
+  async update(_id: ObjectId, preference: ObjectId) {
+    await this.weightings.partialUpdateOne({ _id }, { preference });
     return { msg: "Weighting successfully updated!" };
   }
 
-  // reset a weighting
-  async reset(_id: ObjectId) {
-    const resetWeight = "1";
-    await this.weightings.partialUpdateOne({ _id }, { food: resetWeight, ambience: resetWeight, price: resetWeight, service: resetWeight, novelty: resetWeight });
-    return { msg: "Review deleted successfully!" };
+  async getPreferenceId(_id: ObjectId) {
+    const preference = (await this.weightings.readOne({ _id }))?.preference;
+    return preference;
   }
 
   // assert that the weighting corresponds to a user
@@ -63,6 +51,25 @@ export default class WeightingConcept {
       throw new WeightingUserNotMatchError(user, _id);
     }
   }
+
+  // assert that user does not already have a weighting
+  async assertUserWeightingDoesNotExist(user: ObjectId) {
+    const weighting = await this.weightings.readOne({ user });
+    if (weighting) {
+      throw new NotAllowedError(`Weighting for ${user} already exists!`);
+    }
+  }
+
+  // assert that the weighting corresponds to the correct Preference instance
+  async assertPreferenceWeighting(_id: ObjectId, preference: ObjectId) {
+    const weighting = await this.weightings.readOne({ _id });
+    if (!weighting) {
+      throw new NotFoundError(`Weighting ${_id} does not exist!`);
+    }
+    if (weighting.preference.toString() !== preference.toString()) {
+      throw new WeightingPreferenceNotMatchError(preference, _id);
+    }
+  }
 }
 
 export class WeightingUserNotMatchError extends NotAllowedError {
@@ -71,5 +78,14 @@ export class WeightingUserNotMatchError extends NotAllowedError {
     public readonly _id: ObjectId,
   ) {
     super("{0} is not the user for weighting {1}!", user, _id);
+  }
+}
+
+export class WeightingPreferenceNotMatchError extends NotAllowedError {
+  constructor(
+    public readonly preference: ObjectId,
+    public readonly _id: ObjectId,
+  ) {
+    super("{0} is not the preference for weighting {1}!", preference, _id);
   }
 }

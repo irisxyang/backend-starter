@@ -8,15 +8,12 @@ export interface ReviewDoc extends BaseDoc {
   restaurant: ObjectId;
   comment: string;
 
-  food: string;
-  ambience: string;
-  service: string;
-  price: string;
-  novelty: string;
+  preference: ObjectId;
 }
 
 /**
- * concept: Reviewing [User]
+ * concept: Reviewing [User, Subject, Preference]
+ * Subject = Restaurant
  */
 export default class ReviewingConcept {
   public readonly reviews: DocCollection<ReviewDoc>;
@@ -26,25 +23,40 @@ export default class ReviewingConcept {
   }
 
   // make a new review
-  async create(reviewer: ObjectId, restaurant: ObjectId, comment: string, food: string, ambience: string, service: string, price: string, novelty: string) {
-    const _id = await this.reviews.createOne({ reviewer, restaurant, comment, food, ambience, service, price, novelty });
+  async create(reviewer: ObjectId, restaurant: ObjectId, comment: string, preference: ObjectId) {
+    const _id = await this.reviews.createOne({ reviewer, restaurant, comment, preference });
     return { msg: "Review successfully created!", review: await this.reviews.readOne({ _id }) };
   }
 
   // get all reviews
-  async getReviews() {
+  async getReviews(user?: ObjectId, restaurant?: ObjectId) {
     // page?
-    return await this.reviews.readMany({}, { sort: { _id: -1 } });
+    let reviews;
+    if (user && restaurant) {
+      reviews = await this.reviews.readOne({ user, restaurant });
+    } else if (user) {
+      reviews = await this.reviews.readMany({ user });
+    } else if (restaurant) {
+      reviews = await this.reviews.readMany({ restaurant });
+    } else {
+      reviews = await this.reviews.readMany({}, { sort: { _id: -1 } });
+    }
+
+    return reviews;
   }
 
-  // gets posts by a specific user
+  async getReviewById(_id: ObjectId) {
+    return await this.reviews.readOne({ _id });
+  }
+
+  // gets reviews by a specific user
   async getByUser(reviewer: ObjectId) {
     return await this.reviews.readMany({ reviewer });
   }
 
   // update a review
-  async update(_id: ObjectId, comment?: string, food?: string, ambience?: string, price?: string, service?: string, novelty?: string) {
-    await this.reviews.partialUpdateOne({ _id }, { comment, food, ambience, price, service, novelty });
+  async update(_id: ObjectId, comment?: string) {
+    await this.reviews.partialUpdateOne({ _id }, { comment });
     return { msg: "Review successfully updated!" };
   }
 
@@ -52,6 +64,12 @@ export default class ReviewingConcept {
   async delete(_id: ObjectId) {
     await this.reviews.deleteOne({ _id });
     return { msg: "Review deleted successfully!" };
+  }
+
+  // get preference id associated with review
+  async getPreferenceId(_id: ObjectId) {
+    const preference = (await this.reviews.readOne({ _id }))?.preference;
+    return preference;
   }
 
   // assert that the reviewer of a review is a user
@@ -64,6 +82,8 @@ export default class ReviewingConcept {
       throw new ReviewReviewerNotMatchError(user, _id);
     }
   }
+
+  // assert that review corresponds to the correct Preference instance?
 }
 
 export class ReviewReviewerNotMatchError extends NotAllowedError {
